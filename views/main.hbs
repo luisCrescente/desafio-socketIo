@@ -1,7 +1,36 @@
-<h1 class="display-6 text-center">Chats HBS</h1>
-    <form onsubmit="return enviarMensaje()">
-        <input type="text" id="author" placeholder="Nombre"/>
-        <input type="text" id="text" placeholder="Escriba su mensaje"/>
-        <button type="submit">Enviar mensaje</button>
+<div>
+        <h1>Chats HBS</h1>
+        <form onsubmit="return enviarMensaje()">
+            <input type="email" id="author" placeholder="Email"/>
+            <input type="text" id="text" placeholder="Escriba su mensaje"/>
+            <button type="submit">Enviar mensaje</button>
+        </form>  
+    <div id="messages"></div>
+</div>
+
+<h1>formulario producto HBS</h1>
+    <form onsubmit="return sendProducts()">
+        <input type="text" id="title" placeholder="Nombre de producto"/>
+        <input type="text" id="price" placeholder="Precio de prducto"/>
+        <input type="text" id="img"  placeholder="img por URL" >
+
+        <button type="submit">Enviar producto</button>
     </form>  
-<div id="messages"></div>
+    </div>
+
+<h1>Tabla productos</h1>
+<div>
+<table>
+    <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Precio </th>
+        <th>imagen</th>
+    </tr>
+  </thead>
+   <tbody id="tableProducts">
+    
+    </tbody>
+</table>
+</div>
+
