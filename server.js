@@ -42,9 +42,9 @@ ioServer.on('connection',(socket)=>{
         ioServer.sockets.emit('messages',messages);
     });
 
-    socket.on('new_products',(produc)=>{
-        messages.push(produc);
-        ioServer.sockets.emit('productos',products);
+    socket.on('new_products',(product)=>{
+        products.push(product);
+        ioServer.sockets.emit('products',products);
     });
     
 });
