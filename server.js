@@ -1,7 +1,40 @@
 const express = require('express');
 const handlebars = require('express-handlebars');
+
+//configuracion MySQL-maria db
+// const {mariaDBOptions} = require('./options/mariaDB');
+// const knex = require('knex')(mariaDBOptions);
+
+//configuracion SQLITE3
+const {sqliteOptions} = require('./options/sqlite3');
+const knex = require('knex')(sqliteOptions);
+
 const {Server:HttpServer}=require('http');
 const {Server: IOServer}=require('socket.io');
+
+
+//***** creacion tabla MySQL *****//
+
+// knex.schema.createTable('products',(table)=>{
+//     table.increments('id');
+//     table.string('title', 30);
+//     table.integer('price');
+// }).then(()=>{
+//     console.log('tabla creada');
+// }).catch((err) =>console.log('Error:', err));
+
+
+    // knex.schema.createTable("mensajes", (table) => {
+    //     table.increments('id').primary()
+    //     table.string('mensaje').notNullable()
+    //     table.integer('autor')
+    //     table.string('fecha').notNullable()
+    // })
+    // .then(() => {
+    //     console.log("table created");
+    //     }).catch((err) =>console.log('Error:', err));
+
+
 
 const messages =[];
 const products =[];
@@ -29,7 +62,7 @@ app.set('views','./views');
 
 app.get('/', (req, res) => {
     res.render('main');
-  });
+});
 
 
 ioServer.on('connection',(socket)=>{
