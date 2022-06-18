@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <title>Productos</title>
+    <script src="/socket.io/socket.io.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+    <link rel="stylesheet" href="./tabla.css">
+    <script src="main.js"></script>
+  </head>
+  <body>
+    <form onsubmit="return agregarProducto()" >
+      <div>
+        
+        <H3>TABLA DE PRODUCTOS</H3>
+        <input type="text"  id="title" name="title" placeholder="Nombre" >
+      </div>
+      
+      <div >
+        
+        <input type="text"  placeholder="Precio" name="price" id="price" >
+      </div>
+      <div>
+      
+        <input type="text"  id="thumbnail" name="thumbnail" placeholder="img x URL" >
+      </div>
+    
+      
+      <button type="submit" >Crear Producto</button>
+    </form>
+
+    <div id="tableProdcutsHBS"  ></div>
+    
+    
+
+
+    
+      <div >
+            <h3>CHAT</h3>
+        <div>
+          <form onsubmit="return enviarMensaje()" >
+              <input type="email" id="author" placeholder="Email"/>
+              <input type="text" id="text" placeholder="Escriba su mensaje"/>
+              <button type="submit" >Enviar mensaje</button>
+          </form>  
+          <div id="messagesHBS" ></div>
+        </div>
+    </div>
+
+
+
+
+
+  </body>
+</html>

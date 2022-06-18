@@ -1,82 +1,55 @@
-const socket = io()
+const socket = io(); 
 
-const enviarMensaje = () => {
-    const author = document.getElementById("author").value;
-    const text = document.getElementById("text").value;
-    const time = new Date()
-
-    const mensaje = {
-        author,
-        text,
-        time
-    };
-    socket.emit('new_message', mensaje);
-    return false;
-};
-
-
-const crearEtiquetasMensaje = (mensaje) => {
-    const {
-        author,
-        text,
-        time
-    } = mensaje;
-
-    return `
-    <div>
-        <strong style="color:blue">${author}  </strong>
-        <sm style="color:brown">${time}  :  </sm>
-        <em style="color:green">${text}    </em>
-    </div>
-    `;
-};
-
-const sendProducts  = () =>{
-    const title = document.getElementById('title').value;
-    const price = document.getElementById('price').value;
-    const img = document.getElementById('img').value;
-
-    const product = {
-        title,
-        price,
-        img
-    };
-
-    socket.emit('new_products', product);
-    return false
-};
-
-const createProducts = (product) =>{
-    const {
-        title,
-        price,
-        img
-    } = product;
-    console.log(product);
-
-    return `
-    
-    <tr>
-    <td>${title}</td>
-    <td>${price}</td>
-    <td>
-        
-        <img src=${img} alt="imageName">
-    </td>
-    </tr>
-    `;
+const agregarProducto = () => {
+  const title = document.getElementById("title").value; 
+  const price = document.getElementById("price").value; 
+  const thumbnail = document.getElementById("thumbnail").value; 
+  const producto = { title, price, thumbnail };                   
+  socket.emit('nuevo_prod', producto);                
+  document.getElementById("title").value="";
+  document.getElementById("price").value="";
+  document.getElementById("thumbnail").value="";
+  return false;                                       
 }
 
+const enviarMensaje = () => {
+  const author = document.getElementById("author").value;
+  const text = document.getElementById("text").value; 
+  const fecha = new Date();
+  const objFecha = {
+      dia: fecha.getDate(),
+      mes: fecha.getMonth() + 1,
+      anio: fecha.getFullYear(),
+      hs: fecha.getHours(),
+      min: fecha.getMinutes()
+  }
+const date = `[${objFecha.dia}/${objFecha.mes}/${objFecha.anio} ${objFecha.hs}:${objFecha.min}]`;  
+const mensaje = { author, date , text};                   
 
-const agregarMensajes = (mensajes) => {
-    const mensajesFinal = mensajes.map(mensaje => crearEtiquetasMensaje(mensaje)).join(" ");
-    document.getElementById("messages").innerHTML = mensajesFinal;
-};
+  socket.emit('new_message', mensaje);                
+  document.getElementById("author").value="";
+  document.getElementById("text").value="";
+  return false;                                       
+}
 
-const addProducts = (products) => {
-    const totalProducts = products.map(product => createProducts(product)).join(" ");
-    document.getElementById("tableProducts").innerHTML = totalProducts;
-};
+const renderPlantilla = (producto, mensaje) => {
+  
+  fetch('/templateTable.hbs')
+  .then((res) => res.text())
+  .then((data) => {
+  const template = Handlebars.compile(data);
+  const html = template({producto: producto, title: title, price: price, thumbnail: thumbnail});
+  document.getElementById('tableProdcutsHBS').innerHTML = html;    
+  })
 
-socket.on('messages', (messages) => agregarMensajes(messages));
-socket.on('products', (products) => addProducts(products));
+  fetch('/templateMensajes.hbs')
+  .then((res) => res.text())
+  .then((data) => {
+  const templateChat = Handlebars.compile(data);
+  const htmlChat = templateChat({ mensaje: mensaje});
+  document.getElementById('messagesHBS').innerHTML = htmlChat;
+  })
+
+}
+
+socket.on('new_event', (productos, mensaje) => renderPlantilla(productos, mensaje));

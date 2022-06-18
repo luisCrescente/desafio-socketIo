@@ -1,65 +1,56 @@
 const express = require('express');
-const handlebars = require('express-handlebars');
-const path = require('path');
-const {Server} = require('socket.io')
-const router = require('./routes/products');
-const sockets = require('./socket');
-// const {Server:HttpServer, Server}=require('http');
-// const {Server: IOServer}=require('socket.io');
+const {options_mdb} = require('./options/mariaDB.js');
+const {options} = require('./options/sqlite3.js');
+const createTables = require('./createTables.js')
+let modulo = require('./Contenedor.js');
+
+const { defaultConfiguration } = require('express/lib/application');
+const { Server: HttpServer } = require('http');       
+const { Server: SocketServer } = require('socket.io');
 
 
-// const messages =[];
-// const products =[];
 
 const app = express();
-// const httpServer = new HttpServer(app);
-// const ioServer = new IOServer(httpServer);
+app.use(express.static('public')); 
 
-app.use(express.static('./public'));
-app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+let contenedor_prod = new modulo.Contenedor('productos', options_mdb);
+let contenedor_mnsjs = new modulo.Contenedor('mensajes', options);
 
-app.engine(
-    "hbs",
-    handlebars.engine({
-    extname:'.hbs',
-    defaultLayout:'index.hbs',
-    layoutsDir:__dirname+'/views/layouts'
-    })
+const httpServer = new HttpServer(app);             
+const socketServer = new SocketServer(httpServer);   
 
-)
+socketServer.on('connection', (socket) => {
 
-app.set('view engine','hbs');
-app.set('views','./views');
+    async function init(){
+        await createTables();
+        messages = await contenedor_mnsjs.getAll();
+        producto = await contenedor_prod.getAll();
+        socket.emit('new_event', producto, messages);      
+    }
+    init();
 
-app.get('/', (req, res) => {
-    res.render('main');
+
+    socket.on('nuevo_prod', (obj) => {
+
+        async function ejecutarSaveShow(argObj) {
+            await contenedor_prod.save(argObj);
+            const result = await contenedor_prod.getAll();
+            producto = result;
+            socketServer.sockets.emit('new_event', producto, messages);
+        }
+        ejecutarSaveShow(obj);
+    });
+    socket.on('new_message', (mensaje) => {
+        async function ejecutarSaveShowMnsjs(mnsj) {
+            await contenedor_mnsjs.save(mnsj);
+            const result = await contenedor_mnsjs.getAll();
+            messages = result;
+            socketServer.sockets.emit('new_event', producto, messages);
+        }
+        ejecutarSaveShowMnsjs(mensaje);
+    });
 });
 
-app.use('/api', router);
-
-// ioServer.on('connection', async (socket)=>{
-    
-//     socket.emit('messages',messages);
-//     socket.emit('products',await products.getAll());
-    
-//     socket.on('new_message',(mensaje)=>{
-//         messages.push(mensaje);
-//         ioServer.sockets.emit('messages',messages);
-//     });
-
-//     socket.on('new_products',(product)=>{
-//         products.guardar(product);
-//         let products = products.getAll();
-//         products.push(product);
-//         ioServer.sockets.emit('products',products);
-//     });
-    
-// });
-
-const server = app.listen(app.get())
-
-const io = new Server(server);
-sockets(io);
-
-httpServer.listen(8080, ()=>console.log("servidor corriendo en puerto 8080"));
+httpServer.listen(8080, () => {
+  console.log('Estoy escuchando en el puerto 8080');
+});
