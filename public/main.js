@@ -32,8 +32,8 @@ const mensaje = { author, date , text};
   return false;                                       
 }
 
+
 const renderPlantilla = (producto, mensaje) => {
-  
   fetch('/templateTable.hbs')
   .then((res) => res.text())
   .then((data) => {

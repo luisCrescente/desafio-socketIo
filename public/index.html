@@ -7,10 +7,12 @@
     <script src="main.js"></script>
   </head>
   <body>
+
     <form onsubmit="return agregarProducto()" >
       <div>
         
-        <H3>TABLA DE PRODUCTOS</H3>
+        <div id="tableProdcutsHBS"  ></div>
+        <H3>CARGAR PRODUCTOS</H3>
         <input type="text"  id="title" name="title" placeholder="Nombre" >
       </div>
       
@@ -25,14 +27,8 @@
     
       
       <button type="submit" >Crear Producto</button>
-    </form>
+    </form><br>
 
-    <div id="tableProdcutsHBS"  ></div>
-    
-    
-
-
-    
       <div >
             <h3>CHAT</h3>
         <div>

@@ -17,7 +17,7 @@ class Contenedor{
 
     async getById(numberId){
         try {
-            const dataObjId = await this.knex(this.table).where({"id": numberId});
+            const dataObjId = await this.knex(this.table).where({'id': numberId});
             if(dataObjId){
                 return dataObjId;
             }else{
@@ -30,7 +30,7 @@ class Contenedor{
 
     async getAll(){
         try {
-            const dataObj = await this.knex.from(this.table).select("*");
+            const dataObj = await this.knex.from(this.table).select('*');
             return dataObj;
         } catch (error) {
             console.log(`Problema en getAll(): ${error}`);          
